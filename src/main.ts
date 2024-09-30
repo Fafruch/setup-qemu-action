@@ -39,20 +39,9 @@ actionsToolkit.run(
       });
     });
 
-    await core.group(`Installing QEMU static binaries`, async () => {
+    await core.group(`Installing QEMU static binaries and extracting the available platforms`, async () => {
       await Docker.getExecOutput(['run', '--rm', '--privileged', input.image, '--install', input.platforms], {
         ignoreReturnCode: true
-      }).then(res => {
-        if (res.stderr.length > 0 && res.exitCode != 0) {
-          throw new Error(res.stderr.match(/(.*)\s*$/)?.[0]?.trim() ?? 'unknown error');
-        }
-      });
-    });
-
-    await core.group(`Extracting available platforms`, async () => {
-      await Docker.getExecOutput(['run', '--rm', '--privileged', input.image], {
-        ignoreReturnCode: true,
-        silent: true
       }).then(res => {
         if (res.stderr.length > 0 && res.exitCode != 0) {
           throw new Error(res.stderr.match(/(.*)\s*$/)?.[0]?.trim() ?? 'unknown error');
